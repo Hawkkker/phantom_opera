@@ -71,7 +71,6 @@ class Player():
 
     # Set le comportement pour le personnage 'char'
     def set_behaviour(self, char):
-        ### TODO VERIFIER LES CHANGEMENT DE GROUP/ALONE SI DEPLACEMENT
         if char['suspect'] == True:
             if len(self.nb_in_room(char['position'], False)) == 1:
                 if len(self.sus_alone)-1 >= len(self.sus_grouped):
@@ -320,42 +319,41 @@ class Player():
             tmp = 0
             best_dest = -1
             if nb_sus <= 5:
-                if nb_sus > 0:
-                    sus_playable = self.nb_sus(self.data, False)
-                    all_sus = self.nb_sus(self.char, False)
-                    for i, char in enumerate(sus_playable):
-                        self.set_behaviour(char)
-                        rooms = self.inrange(char)
-                        tmp = self.worth_going(rooms, True)
-                        if tmp != 10:
-                            destination = tmp
-                            for index, cards in enumerate(self.data):
-                                if cards == char:
-                                    return index
-                    for i, char in enumerate(self.data):
-                        self.set_behaviour(char)
-                        max_sus = 0 if self.behaviour == self.group else 10
-                        rooms = self.inrange(char)
-                        tmp = self.worth_going(rooms, True)
-                        if tmp != 10:
-                            if self.behaviour == self.separate:
-                                sus_alone = self.determine_sus(char, tmp)
-                                if sus_alone < max_sus:
-                                    index = i
-                                    max_sus = sus_alone
-                                    best_dest = tmp
-                            else:
-                                sus_grouped = self.determine_sus(char, tmp)
-                                if sus_grouped > max_sus:
-                                    index = i
-                                    max_sus = sus_grouped
-                                    best_dest = tmp
-                    if best_dest >= 0:
-                        destination = best_dest
-                        return index
-                    # TODO les pouvoirs
-                    print("NOTHING WORTH WAS FOUND")
-                    return 0
+                sus_playable = self.nb_sus(self.data, False)
+                all_sus = self.nb_sus(self.char, False)
+                for i, char in enumerate(sus_playable):
+                    self.set_behaviour(char)
+                    rooms = self.inrange(char)
+                    tmp = self.worth_going(rooms, True)
+                    if tmp != 10:
+                        destination = tmp
+                        for index, cards in enumerate(self.data):
+                            if cards == char:
+                                return index
+                for i, char in enumerate(self.data):
+                    self.set_behaviour(char)
+                    max_sus = 0 if self.behaviour == self.group else 10
+                    rooms = self.inrange(char)
+                    tmp = self.worth_going(rooms, True)
+                    if tmp != 10:
+                        if self.behaviour == self.separate:
+                            sus_alone = self.determine_sus(char, tmp)
+                            if sus_alone < max_sus:
+                                index = i
+                                max_sus = sus_alone
+                                best_dest = tmp
+                        else:
+                            sus_grouped = self.determine_sus(char, tmp)
+                            if sus_grouped > max_sus:
+                                index = i
+                                max_sus = sus_grouped
+                                best_dest = tmp
+                if best_dest >= 0:
+                    destination = best_dest
+                    return index
+                # TODO les pouvoirs
+                print("NOTHING WORTH WAS FOUND")
+                return 0
             for i, char in enumerate(self.data):
                 rooms = self.inrange(char)
                 tmp = self.worth_going(rooms, False)
